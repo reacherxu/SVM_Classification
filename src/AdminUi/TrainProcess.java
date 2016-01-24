@@ -8,8 +8,8 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
-
-import svmHelper.svm_train;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 import Base.BaseWordCut;
 import Helper.TfIdfHelper;
@@ -24,22 +24,22 @@ public class TrainProcess extends BaseWordCut{
 	/**
 	 * 所有训练集分词后的map
 	 */
-	HashMap<File, HashMap<String, Integer>> wordsMap = new HashMap<File, HashMap<String, Integer>>();
+	Map<File, HashMap<String, Integer>> wordsMap = new LinkedHashMap<File, HashMap<String, Integer>>();
 	/**
 	 * wordsMap对应的tf-idf频率
 	 */
-	HashMap<File, HashMap<String, Double>> tfIdfMap = new HashMap<File, HashMap<String, Double>>();
+	Map<File, HashMap<String, Double>> tfIdfMap = new LinkedHashMap<File, HashMap<String, Double>>();
 	/**
 	 * 所有训练集生成的词典
 	 */
-	HashMap<String, Integer> wordsDict = new HashMap<String,Integer>();
-	
+	Map<String, Integer> wordsDict = new HashMap<String,Integer>();
+
 	public static HashMap<String, Integer> classLabel = new HashMap<String, Integer>();
 
 	public TrainProcess() throws IOException{
-		classLabel = loadClassFromFile(new File("trainfile/classLabel.txt"));
+		classLabel = loadClassFromFile(new File("corpus_train/classLabel.txt"));
 	}
-	
+
 	/**
 	 * 从训练集中读取文件
 	 * @param path
@@ -49,35 +49,36 @@ public class TrainProcess extends BaseWordCut{
 	 * @return	文件和对应的内容
 	 * @throws Exception
 	 */
-	private HashMap<File, String> readFile(String path) throws Exception{
+	private Map<File, String> readFile(String path) throws Exception{
 		/* path为两层目录结构  */
 		File baseDir = new File(path);
 		File[] catDir = baseDir.listFiles();
-		
-		HashMap<File, String> articles = new HashMap<File,String>();
+
+		Map<File, String> articles = new LinkedHashMap<File,String>();
 		for (File dir : catDir) {
 			if(dir.isDirectory()){
 				File[] files = dir.listFiles();
 				System.out.print(dir.getName()+" ");
 				for (File file : files) {
-//					if(FileHelper.getFileExt(file).equals("txt")){
-						BufferedReader reader = new BufferedReader(new FileReader(file));
-						String temp = null;
-						String content = "";
-						while((temp = reader.readLine()) != null){
-							content += temp;
-						}
-						articles.put(file, content);
-						System.out.print(curFileIndex+" ");
-						curFileIndex++;
-//					}
+					//					if(FileHelper.getFileExt(file).equals("txt")){
+					BufferedReader reader = new BufferedReader(new FileReader(file));
+					String temp = null;
+					String content = "";
+					while((temp = reader.readLine()) != null){
+						content += temp;
+					}
+					articles.put(file, content);
+					System.out.print(curFileIndex+" ");
+					curFileIndex++;
+					reader.close();
+					//					}
 				}
 				System.out.println();
 			}
 		}
 		return articles;
 	}
-	
+
 	/**
 	 * 通过文件获得类标号 如：政治_1.txt 对于的类别为“政治”
 	 * @param file 单个训练集文件的对象
@@ -92,7 +93,7 @@ public class TrainProcess extends BaseWordCut{
 			return -1;
 		}
 	}
-	
+
 	/**
 	 * 构成训练集分词后的map
 	 * @param path
@@ -100,8 +101,8 @@ public class TrainProcess extends BaseWordCut{
 	 */
 	public void cutWord(String path) throws Exception{
 		//训练集中读取全部文件
-		HashMap<File, String> articles = readFile(path);
-		
+		Map<File, String> articles = readFile(path);
+
 		//训练集进行分词
 		Iterator<File> iterator = articles.keySet().iterator();
 		while(iterator.hasNext()){
@@ -120,6 +121,7 @@ public class TrainProcess extends BaseWordCut{
 		try {
 			int index = 1;
 			PrintWriter writer = new PrintWriter(outFile);
+			
 			Iterator<File> classIterator = wordsMap.keySet().iterator();
 			while (classIterator.hasNext()) {
 				File file = classIterator.next();
@@ -136,11 +138,12 @@ public class TrainProcess extends BaseWordCut{
 				}
 			}
 			writer.flush();
+			writer.close();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
-	
+
 	/**
 	 * 转换成libsvm的语料格式
 	 */
@@ -171,37 +174,36 @@ public class TrainProcess extends BaseWordCut{
 				writer.flush();
 			}
 			writer.flush();
+			writer.close();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		
+
 	}
-	
-	public static void main(String[] args)  {
-		
+
+	public static void main(String[] args) {
+
 		Date begin = new Date();
 		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		System.out.println(dateFormat.format(begin));
-		
+
 		TrainProcess model;
 		try {
 			model = new TrainProcess();
-//			model.cutWord("article/");
-			model.cutWord("D:\\temp\\corpus_law\\train");
+			//			model.cutWord("article/");
+			model.cutWord("D:\\TrainningSet\\");
+			model.cutWord("D:\\TestingSet\\");
 			System.out.println("正在开始生成字典");
-			model.makeDictionary(new File("trainfile/dictionary.txt"));//生成所有词的字典
+			model.makeDictionary(new File("corpus_train/dictionary.txt"));//生成所有词的字典
 			System.out.println("字典生成完毕");
 			System.out.println("开始转换成libsvm语料");
-			model.convertToSvmFormat(new File("trainfile/corpus_law_svm.train"));//把语料转换成libsvm的模式
+			model.convertToSvmFormat(new File("corpus_train/svm.train"));//把语料转换成libsvm的模式
 			System.out.println("转换完成");
 			Date end = new Date();
 			System.out.println(dateFormat.format(begin));
 			System.out.println(dateFormat.format(end));
 			int min = (int)(end.getTime() - begin.getTime())/(1000*60);
 			System.out.println("耗时："+min);
-			
-			String argv[] = {"-v","3","trainfile/corpus_law_svm.train"};
-			svm_train.main(argv);
 		} catch (IOException e) {
 			e.printStackTrace();
 		} catch (Exception e) {
@@ -209,10 +211,10 @@ public class TrainProcess extends BaseWordCut{
 		}
 
 	}
-	
-	
-	
-	
-	
+
+
+
+
+
 }
 

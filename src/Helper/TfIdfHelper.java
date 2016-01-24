@@ -3,19 +3,21 @@ package Helper;
 import java.io.File;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 public class TfIdfHelper {
 	
 	/**
 	 * 所有训练集分词后的map
 	 */
-	HashMap<File, HashMap<String, Integer>> wordsMap = new HashMap<File, HashMap<String, Integer>>();
+	Map<File, HashMap<String, Integer>> wordsMap = new LinkedHashMap<File, HashMap<String, Integer>>();
 	/**
 	 * wordsMap对应的tf-idf频率
 	 */
-	HashMap<File, HashMap<String, Double>> tfIdfMap = new HashMap<File, HashMap<String, Double>>();
+	Map<File, HashMap<String, Double>> tfIdfMap = new LinkedHashMap<File, HashMap<String, Double>>();
 	
-	public TfIdfHelper(HashMap<File, HashMap<String, Integer>> wordsMap){
+	public TfIdfHelper(Map<File, HashMap<String, Integer>> wordsMap){
 		this.wordsMap = wordsMap;
 	}
 	
@@ -71,7 +73,7 @@ public class TfIdfHelper {
 	 * 对所有单词进行tfidf计算并返回计算的结果
 	 * @return
 	 */
-	public HashMap<File, HashMap<String, Double>> calculate(){
+	public Map<File, HashMap<String, Double>> calculate(){
 		Iterator<File> fIterator = wordsMap.keySet().iterator();
 		while(fIterator.hasNext()){
 			File file = fIterator.next();

@@ -86,6 +86,7 @@ public class BaseWordCut {
 			result.put(str[1], Integer.parseInt(str[0]));
 			System.out.println(str[1] + " " + str[0]);
 		}
+		reader.close();
 		return result;
 	}
 

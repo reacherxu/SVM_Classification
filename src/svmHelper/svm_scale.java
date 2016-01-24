@@ -63,7 +63,7 @@ public class svm_scale
 		if(this.writer != null){
 			this.writer.print(value + " ");
 		}
-		System.out.print(value + " ");
+//		System.out.print(value + " ");
 	}
 
 	private void output(int index, double value)
@@ -86,7 +86,7 @@ public class svm_scale
 			if(this.writer != null){
 				this.writer.print(index + ":" + value + " ");
 			}
-			System.out.print(index + ":" + value + " ");
+//			System.out.print(index + ":" + value + " ");
 			new_num_nonzeros++;
 		}
 	}
@@ -353,7 +353,7 @@ public class svm_scale
 
 			for(i=next_index;i<= max_index;i++)
 				output(i, 0);
-			System.out.print("\n");
+//			System.out.print("\n");
 			if(this.writer != null){
 				this.writer.print("\n");
 			}

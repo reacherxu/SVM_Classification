@@ -52,6 +52,7 @@ public class WordCut extends BaseWordCut {
 				String[] str = temp.split(" ");
 				wordsDict.put(str[1], Integer.parseInt(str[0]));
 			}
+			reader.close();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -76,6 +77,7 @@ public class WordCut extends BaseWordCut {
 	 * @param className
 	 * @return
 	 */
+	@SuppressWarnings("unused")
 	private int getClassLabel(String className){
 		String[] arr = className.split("_");
 		if (classLabel.containsKey(arr[0])) {
@@ -151,6 +153,7 @@ public class WordCut extends BaseWordCut {
 				writer.println();//Ð´Èë»»ÐÐ·û
 			}
 			writer.flush();
+			writer.close();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

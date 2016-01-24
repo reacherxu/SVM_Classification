@@ -61,6 +61,7 @@ public class FileHelper {
 		String charset = judgeEncode(content);
 		System.out.println(charset);
 //		content = new String(content.getBytes(charset),"utf-8");
+		reader.close();
 		return content;
 	}
 	

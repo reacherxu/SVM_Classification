@@ -24,12 +24,13 @@ public class ProduceClassLabel {
 			}
 		}
 		writer.flush();
+		writer.close();
 	}
 	
 	public static void main(String[] args){
 		try {
-			File baseDir = new File("E:\\article");
-			File outClassFile = new File("trainfile/classLabel.txt");
+			File baseDir = new File("D:\\TrainningSet");
+			File outClassFile = new File("corpus_train/classLabel.txt");
 			makeClassLabel(baseDir, outClassFile);
 		} catch (IOException e) {
 			e.printStackTrace();

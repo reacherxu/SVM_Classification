@@ -27,6 +27,7 @@ public class Classfy {
 //			System.out.println(Double.parseDouble(temp));
 			result.add(Double.parseDouble(temp));
 		}
+		reader.close();
 		return result;
 	}
 	
@@ -42,6 +43,7 @@ public class Classfy {
 			classMap.put(Double.parseDouble(str[0]), str[1]);
 //			System.out.println(Double.parseDouble(str[0]) + " " + str[1]);
 		}
+		reader.close();
 	}
 	
 	private static String getClassByLabel(double label){
@@ -70,8 +72,10 @@ public class Classfy {
 		}
 		
 		if (sourceFiles.length != tempResult.size()) {
+			reader.close();
 			throw new IOException("Classify-->runfile,传入的文件数组长度不匹配");
 		}
+		reader.close();
 		
 		HashMap<String, ArrayList<File>> result = new HashMap<String, ArrayList<File>>();
 		for(int i=0; i<tempResult.size(); i++){
@@ -86,6 +90,7 @@ public class Classfy {
 				tmpList.add(sourceFiles[i]);
 			}
 		}
+		
 		return result;
 	}
 	
